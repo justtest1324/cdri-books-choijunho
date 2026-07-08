@@ -30,7 +30,12 @@ function DetailSearchPopover({ onSearch }: DetailSearchPopoverProps) {
   }
 
   return (
-    <div className="relative shrink-0">
+    <div
+      className="relative shrink-0"
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') setOpen(false)
+      }}
+    >
       <button
         type="button"
         className="border-subtitle text-body2 text-text-subtitle h-9 cursor-pointer rounded-lg border px-3"
@@ -40,6 +45,15 @@ function DetailSearchPopover({ onSearch }: DetailSearchPopoverProps) {
         상세검색
       </button>
 
+      {open && (
+        // 바깥 클릭 시 닫힘 — document 리스너(useEffect) 대신 백드롭 레이어로 선언적 처리
+        <div
+          role="presentation"
+          data-testid="popover-backdrop"
+          className="fixed inset-0 z-10 max-md:bg-black/30"
+          onClick={() => setOpen(false)}
+        />
+      )}
       {open && (
         <div className="absolute top-full left-1/2 z-20 mt-4 w-90 -translate-x-1/2 rounded-lg bg-white p-6 shadow-[0_4px_14px_6px_rgba(151,151,151,0.15)] max-md:fixed max-md:inset-x-0 max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:mt-0 max-md:w-full max-md:translate-x-0 max-md:rounded-t-2xl max-md:rounded-b-none max-md:pb-8">
           <button
