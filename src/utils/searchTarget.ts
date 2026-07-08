@@ -13,8 +13,3 @@ export function parseSearchTarget(value: string | null): SearchTarget | undefine
     ? (value as SearchTarget)
     : undefined
 }
-
-/** target의 한글 라벨 (조건 칩 표시용) */
-export function getTargetLabel(target: SearchTarget): string {
-  return TARGET_OPTIONS.find((option) => option.value === target)?.label ?? ''
-}

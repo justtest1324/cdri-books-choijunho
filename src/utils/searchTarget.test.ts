@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getTargetLabel, parseSearchTarget } from './searchTarget'
+import { parseSearchTarget } from './searchTarget'
 
 describe('parseSearchTarget', () => {
   it('유효한 target 문자열을 그대로 반환한다', () => {
@@ -12,13 +12,5 @@ describe('parseSearchTarget', () => {
     expect(parseSearchTarget('isbn')).toBeUndefined()
     expect(parseSearchTarget('')).toBeUndefined()
     expect(parseSearchTarget(null)).toBeUndefined()
-  })
-})
-
-describe('getTargetLabel', () => {
-  it('target의 한글 라벨을 반환한다', () => {
-    expect(getTargetLabel('title')).toBe('제목')
-    expect(getTargetLabel('person')).toBe('저자명')
-    expect(getTargetLabel('publisher')).toBe('출판사')
   })
 })
