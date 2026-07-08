@@ -18,10 +18,12 @@ function BookListItem({ book, likeButton }: BookListItemProps) {
   const author = book.authors.join(', ')
 
   const purchase = (
-    <Button onClick={() => window.open(book.url, '_blank', 'noopener')}>구매하기</Button>
+    <Button className="max-md:flex-1" onClick={() => window.open(book.url, '_blank', 'noopener')}>
+      구매하기
+    </Button>
   )
   const toggle = (
-    <Button variant="gray" onClick={() => setExpanded((prev) => !prev)}>
+    <Button variant="gray" className="max-md:flex-1" onClick={() => setExpanded((prev) => !prev)}>
       상세보기
       <ChevronIcon direction={expanded ? 'up' : 'down'} className="size-4" />
     </Button>
@@ -29,15 +31,15 @@ function BookListItem({ book, likeButton }: BookListItemProps) {
 
   if (!expanded) {
     return (
-      <li className="border-b-gray flex items-center gap-8 border-b px-4 py-4">
+      <li className="border-b-gray flex items-center gap-8 border-b px-4 py-4 max-md:flex-wrap max-md:gap-4">
         <BookThumbnail
           src={book.thumbnail}
           title={book.title}
           className="h-17 w-12"
           overlay={likeButton}
         />
-        <div className="flex min-w-0 grow items-center gap-4">
-          <Text variant="title3" as="h3" className="truncate">
+        <div className="flex min-w-0 grow items-center gap-4 max-md:flex-col max-md:items-start max-md:gap-1">
+          <Text variant="title3" as="h3" className="truncate max-md:max-w-full">
             {book.title}
           </Text>
           <Text variant="body2" color="secondary" className="shrink-0">
@@ -47,7 +49,7 @@ function BookListItem({ book, likeButton }: BookListItemProps) {
         <Text variant="title3" className="shrink-0">
           {formatPrice(salePrice ?? price)}
         </Text>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex shrink-0 gap-2 max-md:w-full">
           {purchase}
           {toggle}
         </div>
@@ -56,14 +58,14 @@ function BookListItem({ book, likeButton }: BookListItemProps) {
   }
 
   return (
-    <li className="border-b-gray flex gap-8 border-b px-4 py-6">
+    <li className="border-b-gray flex gap-8 border-b px-4 py-6 max-md:flex-col max-md:gap-6">
       <BookThumbnail
         src={book.thumbnail}
         title={book.title}
-        className="h-70 w-48"
+        className="h-70 w-48 max-md:self-center"
         overlay={likeButton}
       />
-      <div className="flex min-w-0 grow flex-col pt-4">
+      <div className="flex min-w-0 grow flex-col pt-4 max-md:pt-0">
         <div className="flex items-center gap-4">
           <Text variant="title3" as="h3">
             {book.title}
@@ -79,8 +81,8 @@ function BookListItem({ book, likeButton }: BookListItemProps) {
           {book.contents}
         </Text>
       </div>
-      <div className="flex w-60 shrink-0 flex-col items-end justify-between">
-        {toggle}
+      <div className="flex w-60 shrink-0 flex-col items-end justify-between max-md:w-full max-md:gap-6">
+        <div className="flex w-full justify-end">{toggle}</div>
         <div className="flex w-full flex-col gap-6">
           <div className="flex flex-col items-end gap-2">
             {salePrice === undefined ? (
