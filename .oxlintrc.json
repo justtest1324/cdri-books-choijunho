@@ -63,6 +63,10 @@
           }
         ]
       }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "rules": { "no-restricted-imports": "off" }
     }
   ]
 }
