@@ -18,7 +18,7 @@ function BookListItem({ book, likeButton }: BookListItemProps) {
   const author = book.authors.join(', ')
 
   const purchase = (
-    <Button className="max-md:flex-1" onClick={() => window.open(book.url, '_blank', 'noopener')}>
+    <Button href={book.url} className="max-md:flex-1">
       구매하기
     </Button>
   )
@@ -102,7 +102,7 @@ function BookListItem({ book, likeButton }: BookListItemProps) {
               </>
             )}
           </div>
-          <Button className="w-full" onClick={() => window.open(book.url, '_blank', 'noopener')}>
+          <Button href={book.url} className="w-full">
             구매하기
           </Button>
         </div>
