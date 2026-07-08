@@ -4,6 +4,7 @@ import BookListSkeleton from '../components/BookListSkeleton'
 import DetailSearchPopover from '../components/DetailSearchPopover'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
+import FilterChip from '../components/FilterChip'
 import LikeButton from '../components/LikeButton'
 import ResultCount from '../components/ResultCount'
 import SearchBar from '../components/SearchBar'
@@ -12,7 +13,7 @@ import { useBookSearch } from '../hooks/useBookSearch'
 import { useFavorites } from '../hooks/useFavorites'
 import { useSearchHistory } from '../hooks/useSearchHistory'
 import type { SearchTarget } from '../types/book'
-import { parseSearchTarget } from '../utils/searchTarget'
+import { getTargetLabel, parseSearchTarget } from '../utils/searchTarget'
 
 function SearchPage() {
   // 검색 상태의 유일한 소스는 URL — 새로고침·뒤로가기·공유 시 검색이 유지된다 (PRD 결정 8)
@@ -56,8 +57,15 @@ function SearchPage() {
         </div>
         <DetailSearchPopover onSearch={handleDetailSearch} />
       </div>
-      <div className="mt-6">
+      <div className="mt-6 flex items-center gap-3">
         <ResultCount label="도서 검색 결과" count={data?.totalCount ?? 0} />
+        {target !== undefined && isSearching && (
+          // 상세 검색은 검색바를 비우는 게 명세(F-4)라, 현재 조건을 칩으로 표시
+          <FilterChip
+            label={`${getTargetLabel(target)}: "${query}"`}
+            onRemove={() => setSearchParams({})}
+          />
+        )}
       </div>
 
       {!isSearching && <EmptyState message="검색된 결과가 없습니다." />}
