@@ -1,8 +1,6 @@
-import { classifyHttpStatus, type HttpErrorKind } from '../utils/httpError'
+import { classifyHttpStatus, type ApiErrorKind } from '../utils/httpError'
 
 const KAKAO_BASE_URL = 'https://dapi.kakao.com'
-
-export type ApiErrorKind = HttpErrorKind | 'network'
 
 export class ApiError extends Error {
   readonly kind: ApiErrorKind
