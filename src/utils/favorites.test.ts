@@ -23,7 +23,7 @@ describe('toggleFavorite', () => {
     expect(result.map((b) => b.isbn)).toEqual(['2', '1'])
   })
 
-  it('이미 찜한 책이면 isbn 기준으로 제거한다', () => {
+  it('이미 찜한 책이면 제거한다', () => {
     const result = toggleFavorite([book('1'), book('2')], book('1'))
     expect(result.map((b) => b.isbn)).toEqual(['2'])
   })
@@ -33,11 +33,20 @@ describe('toggleFavorite', () => {
     const result = toggleFavorite([], snapshot)
     expect(result[0].price).toBe(99999)
   })
+
+  it('같은 isbn이라도 bookId가 다르면 별개의 책으로 취급한다 (중복 ISBN 실사례)', () => {
+    const isbn = '981233209X 9789812332097'
+    const a = { ...book(isbn), url: 'https://search.daum.net/search?w=bookpage&bookId=2787587' }
+    const b = { ...book(isbn), url: 'https://search.daum.net/search?w=bookpage&bookId=1513404' }
+    const result = toggleFavorite([a], b)
+    expect(result).toHaveLength(2)
+    expect(isFavorite([a], b)).toBe(false)
+  })
 })
 
 describe('isFavorite', () => {
-  it('isbn이 목록에 있으면 true', () => {
-    expect(isFavorite([book('1')], '1')).toBe(true)
-    expect(isFavorite([book('1')], '2')).toBe(false)
+  it('같은 키의 책이 목록에 있으면 true', () => {
+    expect(isFavorite([book('1')], book('1'))).toBe(true)
+    expect(isFavorite([book('1')], book('2'))).toBe(false)
   })
 })

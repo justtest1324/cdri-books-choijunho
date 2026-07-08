@@ -16,6 +16,6 @@ export function useFavorites() {
   return {
     favorites,
     toggle,
-    isFavorite: (isbn: string) => isFavorite(favorites, isbn),
+    isFavorite: (book: Book) => isFavorite(favorites, book),
   }
 }

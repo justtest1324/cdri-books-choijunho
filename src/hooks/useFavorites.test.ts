@@ -35,13 +35,13 @@ describe('useFavorites', () => {
     vi.mocked(readStorage).mockReturnValue([book('1')])
     const { result } = renderHook(() => useFavorites())
     expect(result.current.favorites).toHaveLength(1)
-    expect(result.current.isFavorite('1')).toBe(true)
+    expect(result.current.isFavorite(book('1'))).toBe(true)
   })
 
   it('토글로 추가하면 상태와 저장소에 반영된다', () => {
     const { result } = renderHook(() => useFavorites())
     act(() => result.current.toggle(book('1')))
-    expect(result.current.isFavorite('1')).toBe(true)
+    expect(result.current.isFavorite(book('1'))).toBe(true)
     expect(writeStorage).toHaveBeenCalledWith(STORAGE_KEYS.favorites, [book('1')])
   })
 
