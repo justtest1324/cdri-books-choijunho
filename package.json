@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
+    "check:conventions": "bash scripts/check-conventions.sh",
+    "check": "tsc -b && oxlint && bash scripts/check-conventions.sh && vitest run"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",
