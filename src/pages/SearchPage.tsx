@@ -4,10 +4,12 @@ import BookListSkeleton from '../components/BookListSkeleton'
 import DetailSearchPopover from '../components/DetailSearchPopover'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
+import LikeButton from '../components/LikeButton'
 import ResultCount from '../components/ResultCount'
 import SearchBar from '../components/SearchBar'
 import Text from '../components/Text'
 import { useBookSearch } from '../hooks/useBookSearch'
+import { useFavorites } from '../hooks/useFavorites'
 import { useSearchHistory } from '../hooks/useSearchHistory'
 import type { SearchTarget } from '../types/book'
 import { parseSearchTarget } from '../utils/searchTarget'
@@ -19,6 +21,7 @@ function SearchPage() {
   const target = parseSearchTarget(searchParams.get('target'))
 
   const { history, add, remove } = useSearchHistory()
+  const { toggle, isFavorite } = useFavorites()
   const { data, status, errorKind, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useBookSearch({ query, target })
 
@@ -71,6 +74,13 @@ function SearchPage() {
             hasNextPage={hasNextPage}
             isFetchingNextPage={isFetchingNextPage}
             onLoadMore={fetchNextPage}
+            renderLikeButton={(book) => (
+              <LikeButton
+                liked={isFavorite(book.isbn)}
+                title={book.title}
+                onToggle={() => toggle(book)}
+              />
+            )}
           />
         ))}
     </section>
