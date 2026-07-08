@@ -12,7 +12,7 @@ if [ -n "$hits" ]; then
 fi
 
 # 2. fetch 호출은 src/api/ 에서만 (테스트 파일 제외)
-hits=$(grep -rn "fetch(" src --include='*.ts' --include='*.tsx' -l 2>/dev/null | grep -v "^src/api/" | grep -v "\.test\." || true)
+hits=$(grep -rnE "(^|[^A-Za-z_])fetch\(" src --include='*.ts' --include='*.tsx' -l 2>/dev/null | grep -v "^src/api/" | grep -v "\.test\." || true)
 if [ -n "$hits" ]; then
   echo "✗ fetch는 src/api/ 밖에서 호출할 수 없습니다:"
   echo "$hits"
