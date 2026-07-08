@@ -3,6 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { createElement, type ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { searchBooks } from '../api/books'
+import { ApiError } from '../api/http'
 import type { Book, BookSearchResponse } from '../types/book'
 import { useBookSearch } from './useBookSearch'
 
@@ -82,5 +83,25 @@ describe('useBookSearch', () => {
     await waitFor(() =>
       expect(searchBooks).toHaveBeenCalledWith({ query: '하루키', target: 'person', page: 1 }),
     )
+  })
+})
+
+describe('오류 경로', () => {
+  it('API 오류 시 errorKind를 분류해 노출한다', async () => {
+    vi.mocked(searchBooks).mockRejectedValue(new ApiError('auth', '인증 실패'))
+    const { result } = renderHook(() => useBookSearch({ query: '하루키' }), {
+      wrapper: createWrapper(),
+    })
+    await waitFor(() => expect(result.current.status).toBe('error'))
+    expect(result.current.errorKind).toBe('auth')
+  })
+
+  it('ApiError가 아닌 오류는 network로 분류한다', async () => {
+    vi.mocked(searchBooks).mockRejectedValue(new Error('알 수 없는 오류'))
+    const { result } = renderHook(() => useBookSearch({ query: '하루키' }), {
+      wrapper: createWrapper(),
+    })
+    await waitFor(() => expect(result.current.status).toBe('error'))
+    expect(result.current.errorKind).toBe('network')
   })
 })
