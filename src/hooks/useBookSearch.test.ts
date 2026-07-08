@@ -28,9 +28,12 @@ const response = (isbns: string[], isEnd: boolean): BookSearchResponse => ({
   documents: isbns.map(book),
 })
 
-function wrapper({ children }: { children: ReactNode }) {
+// QueryClient는 컴포넌트 밖에서 테스트당 1개 생성 — 렌더 함수 안에서 만들면
+// 리렌더 시 캐시가 초기화되어 간헐적 실패(플래키)의 원인이 된다 (CONVENTIONS 3장)
+function createWrapper() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  return createElement(QueryClientProvider, { client }, children)
+  return ({ children }: { children: ReactNode }) =>
+    createElement(QueryClientProvider, { client }, children)
 }
 
 beforeEach(() => {
@@ -39,14 +42,16 @@ beforeEach(() => {
 
 describe('useBookSearch', () => {
   it('검색어가 비어 있으면 요청하지 않는다', () => {
-    renderHook(() => useBookSearch({ query: '  ' }), { wrapper })
+    renderHook(() => useBookSearch({ query: '  ' }), { wrapper: createWrapper() })
     expect(searchBooks).not.toHaveBeenCalled()
   })
 
   it('검색 성공 시 평탄화된 목록과 총 건수를 반환한다', async () => {
     vi.mocked(searchBooks).mockResolvedValue(response(['1', '2'], false))
 
-    const { result } = renderHook(() => useBookSearch({ query: '하루키' }), { wrapper })
+    const { result } = renderHook(() => useBookSearch({ query: '하루키' }), {
+      wrapper: createWrapper(),
+    })
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toEqual({
@@ -59,7 +64,9 @@ describe('useBookSearch', () => {
   it('is_end면 다음 페이지가 없다', async () => {
     vi.mocked(searchBooks).mockResolvedValue(response(['1'], true))
 
-    const { result } = renderHook(() => useBookSearch({ query: '하루키' }), { wrapper })
+    const { result } = renderHook(() => useBookSearch({ query: '하루키' }), {
+      wrapper: createWrapper(),
+    })
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.hasNextPage).toBe(false)
@@ -68,7 +75,9 @@ describe('useBookSearch', () => {
   it('상세 검색 조건(target)이 API 호출에 전달된다', async () => {
     vi.mocked(searchBooks).mockResolvedValue(response(['1'], true))
 
-    renderHook(() => useBookSearch({ query: '하루키', target: 'person' }), { wrapper })
+    renderHook(() => useBookSearch({ query: '하루키', target: 'person' }), {
+      wrapper: createWrapper(),
+    })
 
     await waitFor(() =>
       expect(searchBooks).toHaveBeenCalledWith({ query: '하루키', target: 'person', page: 1 }),
