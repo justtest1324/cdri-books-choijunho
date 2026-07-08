@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
+import { getBookKey } from '../utils/bookKey'
 import type { Book } from '../types/book'
 import BookListItem from './BookListItem'
 import Spinner from './Spinner'
@@ -26,7 +27,7 @@ function BookList({
     <>
       <ul>
         {books.map((book) => (
-          <BookListItem key={book.isbn} book={book} likeButton={renderLikeButton?.(book)} />
+          <BookListItem key={getBookKey(book)} book={book} likeButton={renderLikeButton?.(book)} />
         ))}
       </ul>
       {isFetchingNextPage && (

@@ -30,11 +30,7 @@ function FavoritesPage() {
           isFetchingNextPage={false}
           onLoadMore={() => setVisibleCount((count) => count + PAGE_SIZE)}
           renderLikeButton={(book) => (
-            <LikeButton
-              liked={isFavorite(book.isbn)}
-              title={book.title}
-              onToggle={() => toggle(book)}
-            />
+            <LikeButton liked={isFavorite(book)} title={book.title} onToggle={() => toggle(book)} />
           )}
         />
       )}

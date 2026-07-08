@@ -79,7 +79,7 @@ function SearchPage() {
             onLoadMore={fetchNextPage}
             renderLikeButton={(book) => (
               <LikeButton
-                liked={isFavorite(book.isbn)}
+                liked={isFavorite(book)}
                 title={book.title}
                 onToggle={() => toggle(book)}
               />
