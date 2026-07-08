@@ -33,11 +33,9 @@ function Select<T extends string>({ options, value, onChange }: SelectProps<T>) 
           className="absolute inset-x-0 top-full z-20 bg-white py-1 shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
         >
           {options.map((option) => (
-            <li key={option.value}>
+            <li key={option.value} role="option" aria-selected={option.value === value}>
               <button
                 type="button"
-                role="option"
-                aria-selected={option.value === value}
                 className="text-body2 text-text-secondary hover:bg-light-gray w-full cursor-pointer px-3 py-2 text-left"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
