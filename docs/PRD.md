@@ -1,7 +1,7 @@
 # PRD — CERTICOS BOOKS (도서 검색 서비스)
 
 > CDRI 프론트엔드 사전과제. 카카오 도서 검색 API 기반 도서 검색 + 찜 관리 웹 앱.
-> 상태: **확정 (v1.0)** — 2026-07-07 리뷰 완료. 미확정 사항은 §8의 결정 사항으로 대체됨.
+> 상태: **확정 (v1.0)** — 2026-07-07 리뷰 완료. 미확정 사항은 8장의 결정 사항으로 대체됨.
 
 ---
 
@@ -42,7 +42,7 @@
 **결과 리스트 아이템**
 - 접힌 상태(기본): 소형 썸네일(+찜 하트) · 제목 · 저자 · 가격 · `구매하기`(Primary 버튼) · `상세보기 ∨`(Gray 버튼)
 - `상세보기` 클릭 시 **아코디언 확장**: 대형 썸네일(+찜 하트) · 제목/저자 · "책 소개" 본문 · 우측에 원가/할인가 · `구매하기` (버튼 라벨 `상세보기 ∧`로 토글)
-- **찜 하트**: 접힘/펼침 모두 썸네일 우상단에 표시. 찜한 책은 빨간 채움 하트(캡처 확인), 찜하지 않은 책은 라인 하트로 토글 버튼 제공 (캡처에서는 찜한 책에만 하트가 보임 — 미찜 상태 하트 스타일은 Figma 확인, 기본안: 라인 하트)
+- **찜 하트**: 접힘/펼침 모두 썸네일 우상단에 표시 (Figma 댓글에서 디자이너 확인: "책 이미지 우상단"). 미찜 = `like/line`(라인 하트), 찜 = `like/fill`(#E84118 채움 하트) — Figma 컴포넌트로 확정
 - 가격 표기: 할인가(`sale_price`)가 있으면 원가(`price`)는 취소선, 할인가 강조. **할인가 없으면 원가만 노출**
 - `구매하기` 클릭 시 새 탭으로 도서 상세 페이지(`document.url`) 이동
 
@@ -79,7 +79,7 @@
 | 총 건수 | 응답 `meta.total_count` |
 | 마지막 페이지 판단 | 응답 `meta.is_end`, `meta.pageable_count` (노출 가능 문서 기준) |
 
-**응답 필드 사용처**: `title`(제목) · `authors`(저자) · `contents`(책 소개) · `thumbnail`(표지) · `price`/`sale_price`(가격) · `url`(구매하기) · `isbn`(아이템 식별 key) · `publisher`, `datetime`, `status`(아코디언 상세에 노출 여부 §8)
+**응답 필드 사용처**: `title`(제목) · `authors`(저자) · `contents`(책 소개) · `thumbnail`(표지) · `price`/`sale_price`(가격) · `url`(구매하기) · `isbn`(아이템 식별 key) · `publisher`, `datetime`, `status`(아코디언 상세에 노출 여부 8장)
 
 **에러/제약**: page 최대 50 → 500건 초과 접근 불가 처리, 401(키 오류)·429(쿼터) 안내 UI, 네트워크 오류 시 재시도 유도.
 
@@ -97,19 +97,36 @@ value: Book[]                      // Book = 카카오 Document 필드 그대로
 
 - 서버 상태(검색 결과)는 React Query가 관리, 클라이언트 영속 상태(기록/찜)는 localStorage 동기화 커스텀 훅으로 관리.
 
-## 6. 디자인 토큰 (Style.png / Elements.png 기준)
+## 6. 디자인 토큰 (2026-07-08 Figma에서 실측 확정)
 
-**Typography** (Figma에서 정확값 확정 필요): `Title1` `Title2` `Title3` `Body1` `Body2` `Body2/bold` `Caption` `Small`
+**폰트**: Noto Sans KR (전체 공통, letter-spacing 0%)
+
+**Typography**
+| 토큰 | Weight | Size / Line height |
+|---|---|---|
+| `Title1` | 700 Bold | 24px / 24px |
+| `Title2` | 700 Bold | 22px / 24px |
+| `Title3` | 700 Bold | 18px / 18px |
+| `Body1` | 500 Medium | 20px / 20px |
+| `Body2` | 500 Medium | 14px / 14px |
+| `Body2Bold` | 700 Bold | 14px / 14px |
+| `Caption` | 500 Medium | 16px / 16px |
+| `Small` | 500 Medium | 10px / 10px |
 
 **Color**
-| 토큰 | 용도 |
-|---|---|
-| `palette.primary` (파랑) | 구매하기 버튼, 강조 숫자(총 N건), 활성 탭 밑줄 |
-| `palette.red` | 찜 하트 |
-| `palette.gray` | 상세보기 버튼 배경 |
-| `palette.lightGray` | 검색바 배경 |
-| `palette.white` / `palette.black` | 배경/텍스트 |
-| `text.primary` / `text.secondary` / `text.subtitle` | 본문/보조/저자명 등 |
+| 토큰 | HEX | 용도 |
+|---|---|---|
+| `palette.primary` | `#4880EE` | 구매하기 버튼, 강조 숫자(총 N건), 활성 탭 밑줄 |
+| `palette.red` | `#E84118` | 찜 하트(fill) |
+| `palette.gray` | `#DADADA` | 상세보기 버튼 배경, 구분선 |
+| `palette.lightGray` | `#F2F4F6` | 검색바 배경 |
+| `palette.white` | `#FFFFFF` | 배경 |
+| `palette.black` | `#222222` | 헤더 로고 등 |
+| `text.primary` | `#353C49` | 본문 텍스트 |
+| `text.secondary` | `#6D7582` | 보조 텍스트 |
+| `text.subtitle` | `#8D94A0` | 저자명 등 서브 텍스트 |
+
+**Icon**: Figma에 컴포넌트로 정의된 것은 `like/line`(미찜), `like/fill`(찜, red) 하트 2종. 그 외 화면에 쓰이는 돋보기·X·셰브론은 컴포넌트 미정의 → 인라인 SVG로 구현.
 
 **공통 컴포넌트 후보** (Elements.png): `Header` `Tab` `SearchBar(+기록 드롭다운)` `DetailSearchPopover` `Select` `Button(primary/secondary)` `BookListItem(collapsed/expanded)` `EmptyState` `ResultCount` `LikeButton`
 
@@ -117,7 +134,7 @@ value: Book[]                      // Book = 카카오 Document 필드 그대로
 
 | 평가 기준 | 대응 |
 |---|---|
-| UI 구현력·디자인 완성도 (재사용 컴포넌트) | §6 공통 컴포넌트를 디자인 토큰 기반으로 구현, 검색/찜 페이지가 동일 `BookListItem` 재사용 |
+| UI 구현력·디자인 완성도 (재사용 컴포넌트) | 6장 공통 컴포넌트를 디자인 토큰 기반으로 구현, 검색/찜 페이지가 동일 `BookListItem` 재사용 |
 | 코드 가독성·유지보수성 | 기능 단위 폴더 구조, 타입 분리, 명확한 네이밍, 이슈/PR 단위 개발 |
 | 상태 관리·API 연동 | React Query(서버 상태) + localStorage 훅(영속 상태) 역할 분리, 쿼리 키 설계 |
 | 성능 최적화 | React Query 캐싱/staleTime, 목록 페이지 단위 로딩, 이미지 lazy loading, 불필요 리렌더 방지(메모이제이션은 계측 후 필요한 곳만) |
@@ -133,3 +150,27 @@ value: Book[]                      // Book = 카카오 Document 필드 그대로
    - 데스크톱(≥1024px): Figma/캡처 그대로
    - 태블릿(768~1023px): 컨테이너 폭 유동, 구조 동일
    - 모바일(<768px): 리스트 아이템 세로 스택, 버튼 풀폭, 상세검색 팝업은 하단 시트
+7. **로딩 UI** (2026-07-08 확정): 첫 검색 로딩은 리스트 아이템 형태의 **스켈레톤**, 무한 스크롤 추가 로딩은 리스트 하단 스피너
+8. **URL 동기화** (2026-07-08 확정): 검색 상태를 URL 쿼리 파라미터로 관리 (`/?q=검색어&target=title`) — 새로고침·뒤로가기·링크 공유 시 검색 결과 유지
+9. **엣지 상태** (2026-07-08 확정): 에러 시 "다시 시도" 버튼이 있는 에러 뷰, `thumbnail` 빈 값은 플레이스홀더 이미지, `sale_price === -1`은 할인가 없음으로 처리, 공백 검색어 제출 방지
+
+## 10. 기술 결정 (2026-07-08 확정)
+
+| 항목 | 선택 | 근거 요약 |
+|---|---|---|
+| 빌드/언어 | Vite + React 19 + TypeScript | 필수 스택, SPA 과제에 최적 |
+| 서버 상태 | @tanstack/react-query (`useInfiniteQuery`) | 필수 스택, 캐싱·무한 스크롤 내장 |
+| 스타일링 | **Tailwind CSS v4** | `@theme`으로 Figma 실측 토큰을 CSS 변수로 선언, 빌드 타임 CSS(런타임 오버헤드 0 → 성능), 작성자 숙련도 |
+| 라우팅 | react-router (`/`, `/favorites`) | 탭 상태의 URL 유지, 검색 상태 URL 동기화의 기반 |
+| HTTP | fetch 래퍼 (axios 미사용) | 엔드포인트 1개 — 의존성 최소화 |
+| 테스트 | vitest — 계산·훅만 TDD | UI는 Figma 캡처 시각 대조로 검증 (개발 사이클은 CONVENTIONS.md) |
+| 폴더 구조 | 레이어 기반: `api/ components/ hooks/ pages/ styles/ types/ utils/ lib/` | 화면 2개 규모에 맞는 구조, 계산(utils)/액션(api·lib) 분리 원칙 반영 |
+
+코딩 원칙·개발 사이클·Git 컨벤션은 `docs/CONVENTIONS.md` 참조.
+
+## 9. Figma 확인 사항 (2026-07-08)
+
+- **유의사항 프레임**: "디자인만으로 요구사항이 명확할 경우 별도의 텍스트로 작성되어 있지 않음. 명시되지 않은 요구사항은 지원자 개인의 판단에 따라 작업" → 8장의 자체 결정들이 유효함
+- **디자이너 댓글 Q&A**:
+  - 찜하기 버튼 위치 → "책 이미지 우상단"
+  - 구매하기 동작 → "API에 있는 구매 링크(`document.url`)로 이동"
