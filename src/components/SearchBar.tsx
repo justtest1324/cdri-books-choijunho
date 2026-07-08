@@ -82,7 +82,7 @@ function SearchBar({ history, defaultValue = '', onSearch, onRemoveHistory }: Se
               key={term}
               role="option"
               aria-selected={index === activeIndex}
-              className={`flex items-center justify-between py-2 pr-5 pl-13 ${
+              className={`flex items-center justify-between py-3 pr-5 pl-13 ${
                 index === activeIndex ? 'bg-gray/30' : ''
               }`}
             >
