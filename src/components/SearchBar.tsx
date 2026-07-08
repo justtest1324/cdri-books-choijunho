@@ -4,13 +4,14 @@ import SearchIcon from './icons/SearchIcon'
 
 type SearchBarProps = {
   history: string[]
+  defaultValue?: string
   onSearch: (term: string) => void
   onRemoveHistory: (term: string) => void
 }
 
 /** 검색 입력 + 검색 기록 드롭다운 (PRD F-1·F-2, 결정 4) */
-function SearchBar({ history, onSearch, onRemoveHistory }: SearchBarProps) {
-  const [value, setValue] = useState('')
+function SearchBar({ history, defaultValue = '', onSearch, onRemoveHistory }: SearchBarProps) {
+  const [value, setValue] = useState(defaultValue)
   const [focused, setFocused] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
 
