@@ -5,19 +5,30 @@ import Button from './Button'
 import CloseIcon from './icons/CloseIcon'
 import Select from './Select'
 
+type ActiveDetailSearch = {
+  term: string
+  target: SearchTarget
+}
+
 type DetailSearchPopoverProps = {
+  /** 현재 활성인 상세 검색 조건 — 있으면 팝업을 다시 열 때 채워진다 */
+  active?: ActiveDetailSearch
   onSearch: (term: string, target: SearchTarget) => void
 }
 
-/** 상세검색 버튼 + 하단 팝오버 (PRD F-3) — 열 때마다 조건이 초기화된다 */
-function DetailSearchPopover({ onSearch }: DetailSearchPopoverProps) {
+/**
+ * 상세검색 버튼 + 하단 팝오버 (PRD F-3)
+ * 열 때 활성 상세 검색 조건이 있으면 유지, 없으면 초기화 —
+ * 명세의 초기화 조건은 '전체 검색 실행 시'뿐이므로 재오픈 유지는 명세와 양립 (F-4)
+ */
+function DetailSearchPopover({ active, onSearch }: DetailSearchPopoverProps) {
   const [open, setOpen] = useState(false)
   const [target, setTarget] = useState<SearchTarget>('title')
   const [term, setTerm] = useState('')
 
   const openPopover = () => {
-    setTarget('title')
-    setTerm('')
+    setTarget(active?.target ?? 'title')
+    setTerm(active?.term ?? '')
     setOpen(true)
   }
 

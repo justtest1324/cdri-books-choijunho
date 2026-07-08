@@ -40,11 +40,26 @@ describe('DetailSearchPopover (F-3)', () => {
     expect(screen.queryByRole('textbox', { name: '상세검색어' })).toBeNull()
   })
 
-  it('닫았다 다시 열면 조건이 초기화되어 있다 (F-4)', async () => {
+  it('활성 상세 검색이 없으면 닫았다 다시 열 때 조건이 초기화되어 있다', async () => {
     await openPopover()
     await userEvent.type(screen.getByRole('textbox', { name: '상세검색어' }), '하루키')
     await userEvent.click(screen.getByTestId('popover-backdrop'))
     await userEvent.click(screen.getByRole('button', { name: '상세검색' }))
     expect(screen.getByRole('textbox', { name: '상세검색어' })).toHaveProperty('value', '')
+  })
+
+  it('활성 상세 검색 조건이 있으면 열 때 채워져 있다', async () => {
+    render(
+      <DetailSearchPopover
+        active={{ term: '무라카미 하루키', target: 'person' }}
+        onSearch={onSearch}
+      />,
+    )
+    await userEvent.click(screen.getByRole('button', { name: '상세검색' }))
+    expect(screen.getByRole('textbox', { name: '상세검색어' })).toHaveProperty(
+      'value',
+      '무라카미 하루키',
+    )
+    expect(screen.getByRole('button', { name: /저자명/ })).toBeDefined()
   })
 })
