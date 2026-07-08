@@ -1,3 +1,6 @@
+/* Noto Sans KR 셀프호스팅 — CDN 요청 체인 제거로 FOUT 최소화 (유니코드 서브셋 분할 로드) */
+@import '@fontsource/noto-sans-kr/500.css';
+@import '@fontsource/noto-sans-kr/700.css';
 @import 'tailwindcss';
 
 /* 디자인 토큰 — Figma 실측값 (docs/PRD.md 6장) */
@@ -39,6 +42,11 @@
   --text-small: 10px;
   --text-small--line-height: 10px;
   --text-small--font-weight: 500;
+}
+
+html {
+  /* 스크롤바 등장/소멸 시 콘텐츠가 좌우로 밀리지 않도록 공간을 항상 예약 */
+  scrollbar-gutter: stable;
 }
 
 body {
