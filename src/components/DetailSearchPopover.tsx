@@ -41,7 +41,7 @@ function DetailSearchPopover({ onSearch }: DetailSearchPopoverProps) {
       </button>
 
       {open && (
-        <div className="absolute top-full left-1/2 z-20 mt-4 w-90 -translate-x-1/2 rounded-lg bg-white p-6 shadow-[0_4px_14px_6px_rgba(151,151,151,0.15)]">
+        <div className="absolute top-full left-1/2 z-20 mt-4 w-90 -translate-x-1/2 rounded-lg bg-white p-6 shadow-[0_4px_14px_6px_rgba(151,151,151,0.15)] max-md:fixed max-md:inset-x-0 max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:mt-0 max-md:w-full max-md:translate-x-0 max-md:rounded-t-2xl max-md:rounded-b-none max-md:pb-8">
           <button
             type="button"
             aria-label="상세검색 닫기"
