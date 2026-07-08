@@ -52,7 +52,7 @@ function SearchBar({ history, defaultValue = '', onSearch, onRemoveHistory }: Se
           submit(value)
         }}
       >
-        <div className="flex h-12 items-center gap-3 px-5">
+        <div className="flex h-[50px] items-center gap-3 px-5">
           <SearchIcon className="text-text-secondary size-5 shrink-0" />
           <input
             type="text"

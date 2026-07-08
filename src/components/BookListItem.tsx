@@ -58,11 +58,11 @@ function BookListItem({ book, likeButton }: BookListItemProps) {
   }
 
   return (
-    <li className="border-b-gray flex gap-8 border-b px-4 py-6 max-md:flex-col max-md:gap-6">
+    <li className="border-b-gray flex gap-8 border-b px-4 py-8 max-md:flex-col max-md:gap-6">
       <BookThumbnail
         src={book.thumbnail}
         title={book.title}
-        className="h-70 w-48 max-md:self-center"
+        className="h-70 w-[210px] max-md:self-center"
         overlay={likeButton}
       />
       <div className="flex min-w-0 grow flex-col pt-4 max-md:pt-0">
