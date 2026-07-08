@@ -36,7 +36,9 @@ function SearchBar({ history, defaultValue = '', onSearch, onRemoveHistory }: Se
       setActiveIndex((prev) => (prev <= 0 ? history.length - 1 : prev - 1))
     } else if (e.key === 'Enter' && activeIndex >= 0) {
       e.preventDefault()
-      submit(history[activeIndex])
+      // 탐색 중 항목이 삭제되면 activeIndex가 범위를 벗어날 수 있다
+      const selected = history[activeIndex]
+      if (selected !== undefined) submit(selected)
     } else if (e.key === 'Escape') {
       setFocused(false)
     }
@@ -99,7 +101,10 @@ function SearchBar({ history, defaultValue = '', onSearch, onRemoveHistory }: Se
                 aria-label={`검색 기록에서 ${term} 삭제`}
                 className="cursor-pointer"
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={() => onRemoveHistory(term)}
+                onClick={() => {
+                  setActiveIndex(-1)
+                  onRemoveHistory(term)
+                }}
               >
                 <CloseIcon className="text-text-primary size-4" />
               </button>

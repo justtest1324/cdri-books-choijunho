@@ -70,3 +70,22 @@ describe('검색 기록 드롭다운 (F-2, 결정 4)', () => {
     expect(onSearch).toHaveBeenCalledExactlyOnceWith('두번째')
   })
 })
+
+describe('회귀: 기록 삭제 후 키보드 상태', () => {
+  it('탐색 중 기록이 줄어 activeIndex가 범위를 벗어나도 Enter가 크래시하지 않는다', async () => {
+    const { rerender } = render(
+      <SearchBar
+        history={['첫번째', '두번째']}
+        onSearch={onSearch}
+        onRemoveHistory={onRemoveHistory}
+      />,
+    )
+    await userEvent.click(screen.getByRole('textbox', { name: '도서 검색' }))
+    await userEvent.keyboard('{ArrowDown}{ArrowDown}')
+    rerender(
+      <SearchBar history={['첫번째']} onSearch={onSearch} onRemoveHistory={onRemoveHistory} />,
+    )
+    await userEvent.keyboard('{Enter}')
+    expect(onSearch).not.toHaveBeenCalled()
+  })
+})
