@@ -79,7 +79,7 @@
 | 총 건수 | 응답 `meta.total_count` |
 | 마지막 페이지 판단 | 응답 `meta.is_end`, `meta.pageable_count` (노출 가능 문서 기준) |
 
-**응답 필드 사용처**: `title`(제목) · `authors`(저자) · `contents`(책 소개) · `thumbnail`(표지) · `price`/`sale_price`(가격) · `url`(구매하기) · `isbn`(아이템 식별 key) · `publisher`, `datetime`, `status`(아코디언 상세에 노출 여부 8장)
+**응답 필드 사용처**: `title`(제목) · `authors`(저자) · `contents`(책 소개) · `thumbnail`(표지) · `price`/`sale_price`(가격) · `url`(구매하기·**bookId가 도서 식별 키** — isbn은 중복 사례 존재) · `isbn` · `publisher`, `datetime`, `status`(아코디언 상세에 노출 여부 8장)
 
 **에러/제약**: page 최대 50 → 500건 초과 접근 불가 처리, 401(키 오류)·429(쿼터) 안내 UI, 네트워크 오류 시 재시도 유도.
 
@@ -90,7 +90,7 @@
 key: "certicos-books:search-history"
 value: string[]                    // 최신순, 최대 8개
 
-// 찜 목록 — 찜 시점의 Book 스냅샷 (isbn을 식별자로 사용)
+// 찜 목록 — 찜 시점의 Book 스냅샷 (식별자는 getBookKey: url의 bookId → isbn → 제목+출판사 폴백)
 key: "certicos-books:favorites"
 value: Book[]                      // Book = 카카오 Document 필드 그대로
 ```
@@ -154,6 +154,13 @@ value: Book[]                      // Book = 카카오 Document 필드 그대로
 8. **URL 동기화** (2026-07-08 확정): 검색 상태를 URL 쿼리 파라미터로 관리 (`/?q=검색어&target=title`) — 새로고침·뒤로가기·링크 공유 시 검색 결과 유지
 9. **엣지 상태** (2026-07-08 확정): 에러 시 "다시 시도" 버튼이 있는 에러 뷰, `thumbnail` 빈 값은 플레이스홀더 이미지, `sale_price === -1`은 할인가 없음으로 처리, 공백 검색어 제출 방지
 
+## 9. Figma 확인 사항 (2026-07-08)
+
+- **유의사항 프레임**: "디자인만으로 요구사항이 명확할 경우 별도의 텍스트로 작성되어 있지 않음. 명시되지 않은 요구사항은 지원자 개인의 판단에 따라 작업" → 8장의 자체 결정들이 유효함
+- **디자이너 댓글 Q&A**:
+  - 찜하기 버튼 위치 → "책 이미지 우상단"
+  - 구매하기 동작 → "API에 있는 구매 링크(`document.url`)로 이동"
+
 ## 10. 기술 결정 (2026-07-08 확정)
 
 | 항목 | 선택 | 근거 요약 |
@@ -168,9 +175,12 @@ value: Book[]                      // Book = 카카오 Document 필드 그대로
 
 코딩 원칙·개발 사이클·Git 컨벤션은 `docs/CONVENTIONS.md` 참조.
 
-## 9. Figma 확인 사항 (2026-07-08)
+## 11. 구현 중 추가 결정 (2026-07-08~09, 사용자 QA·코드리뷰 반영)
 
-- **유의사항 프레임**: "디자인만으로 요구사항이 명확할 경우 별도의 텍스트로 작성되어 있지 않음. 명시되지 않은 요구사항은 지원자 개인의 판단에 따라 작업" → 8장의 자체 결정들이 유효함
-- **디자이너 댓글 Q&A**:
-  - 찜하기 버튼 위치 → "책 이미지 우상단"
-  - 구매하기 동작 → "API에 있는 구매 링크(`document.url`)로 이동"
+1. **팝오버 닫기 확장**: 상세검색 팝오버는 바깥 클릭·Esc로도 닫힘 (백드롭 방식, useEffect 없음). '검색하기 시 닫힘'은 명세대로 유지
+2. **상세검색 조건 유지**: 팝오버를 다시 열면 활성 조건이 채워져 있음 — 명세의 초기화 조건은 '전체 검색 실행 시'뿐이므로 양립. (조건 칩 방식은 검토 후 폐기)
+3. **도서 식별 키**: isbn은 중복 실사례 존재('123 (Flash Cards)' 두 권이 동일 ISBN) → `getBookKey` = url의 bookId → isbn → 제목+출판사 폴백
+4. **Figma 실측 보정**: 검색바 480×50, 대형 썸네일 210×280, 펼침 행 344px, 콘텐츠 폭 960px 정중앙 (실측 확인), 검색 기록 행 피치 ~40px
+5. **시각 안정성**: Noto Sans KR 셀프호스팅(@fontsource, FOUT 제거), `scrollbar-gutter: stable`(스크롤바 레이아웃 시프트 제거)
+6. **재시도 정책**: auth(401/403)·rateLimit(429)은 재시도하지 않음 — 429 재시도는 쿼터 악화
+7. **구매하기 시맨틱**: button+window.open → `<a target="_blank">` (Button href 지원)
